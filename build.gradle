@@ -1,0 +1,69 @@
+import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
+
+plugins {
+    id 'java'
+    id 'application'
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots/"
+        allowInsecureProtocol = true
+    }
+}
+
+group 'org.pigu'
+version '1.0-SNAPSHOT'
+mainClassName = project.properties['main'] ?: 'Main'
+
+project.ext.lwjglVersion = "3.4.0"
+project.ext.lwjglNatives = "natives-windows"
+
+project.ext.jomlVersion = "1.10.8"
+
+dependencies {
+	implementation platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
+
+	implementation "org.lwjgl:lwjgl"
+	implementation "org.lwjgl:lwjgl-assimp"
+	implementation "org.lwjgl:lwjgl-glfw"
+	implementation "org.lwjgl:lwjgl-openal"
+	implementation "org.lwjgl:lwjgl-opengl"
+	implementation "org.lwjgl:lwjgl-stb"
+	implementation "org.lwjgl:lwjgl::$lwjglNatives"
+	implementation "org.lwjgl:lwjgl-assimp::$lwjglNatives"
+	implementation "org.lwjgl:lwjgl-glfw::$lwjglNatives"
+	implementation "org.lwjgl:lwjgl-openal::$lwjglNatives"
+	implementation "org.lwjgl:lwjgl-opengl::$lwjglNatives"
+	implementation "org.lwjgl:lwjgl-stb::$lwjglNatives"
+
+    //implementation "org.joml:joml:${jomlVersion}"
+}
+
+java {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+}
+
+application {
+    if(DefaultNativePlatform.currentOperatingSystem.isMacOsX()) {
+        applicationDefaultJvmArgs = ['-XstartOnFirstThread']
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+
+distributions {
+    main {
+        contents {
+            into('resources'){
+                from 'resources'
+            }
+        }
+    }
+}
+
