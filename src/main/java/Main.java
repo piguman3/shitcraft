@@ -107,24 +107,14 @@ public class Main {
 		GL.createCapabilities();
 
 		// Set the clear color
-		glClearColor(0.0f, 0.0f, 1.0f, 0.0f);
-
-		float[] verticesQuad = {
-			-0.5f, 0.5f, 0.0f,
-			0.5f, -0.5f, 0.0f,
-			0.5f, 0.5f, 0.0f,
-			-0.5f, 0.5f, 0.0f,
-			0.5f, -0.5f, 0.0f,
-			-0.5f, -0.5f, 0.0f
-		};
+		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 		float[] verticesTri = {
-			-0.5f, -0.5f, 0.0f,
-			0.5f, -0.5f, 0.0f,
-			0.0f, 0.5f, 0.0f,
+			-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
+			0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
+			0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f
 		};
 
-		Mesh square = new Mesh(verticesQuad);
 		Mesh triangle = new Mesh(verticesTri);
 
 		Shader vertexShader = new Shader(GL_VERTEX_SHADER);
@@ -150,7 +140,7 @@ public class Main {
 		vertexShader.delete();
 		fragmentShader.delete();
 
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 		// Run the rendering loop until the user has attempted to close
 		// the window or has pressed the ESCAPE key.
@@ -159,7 +149,6 @@ public class Main {
 
 			program.use();
 
-			square.draw();
 			triangle.draw();
 
 			glfwSwapBuffers(window); // swap the color buffers
