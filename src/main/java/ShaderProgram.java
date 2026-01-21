@@ -22,4 +22,16 @@ public class ShaderProgram {
     public void use() {
         glUseProgram(this.id);
     }
+
+    void setBool(String name, Boolean value) {
+        glUniform1i(glGetUniformLocation(this.id, name), value ? 1 : 0);
+    }
+
+    void setInt(String name, int value)  {
+        glUniform1i(glGetUniformLocation(this.id, name), value);
+    }
+
+    void setFloat(String name, float value)  {
+        glUniform1f(glGetUniformLocation(this.id, name), value);
+    }
 }

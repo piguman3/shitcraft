@@ -16,7 +16,7 @@ public class Mesh {
     FloatBuffer vertexBuffer;
 
     public void upload() {
-        if (this.vertexBuffer.capacity() != this.vertices.length)
+        if (this.vertexBuffer == null || this.vertexBuffer.capacity() != this.vertices.length)
             this.vertexBuffer = BufferUtils.createFloatBuffer(this.vertices.length);
         this.vertexBuffer.put(this.vertices);
 		this.vertexBuffer.flip();
@@ -28,7 +28,6 @@ public class Mesh {
 
     public Mesh(float[] vertices) {
 		this.vertices = vertices;
-		this.vertexBuffer = BufferUtils.createFloatBuffer(vertices.length);
 
 		try ( MemoryStack stack = stackPush() ) {
 			IntBuffer VAObuf = stack.mallocInt(1);
