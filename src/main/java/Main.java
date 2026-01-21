@@ -128,9 +128,9 @@ public class Main {
 		glClearColor(0.0f, 0.0f, 1.0f, 0.0f);
 
 		float[] vertices = {
-			-0.5f, -0.5f, 0.0f,
+			-0.5f, 0.5f, 0.0f,
 			0.5f, -0.5f, 0.0f,
-			0.0f, 0.5f, 0.0f
+			0.5f, 0.5f, 0.0f
 		};
 		
 		// TODO: move all this trash to proper classes (i.e shaders)
@@ -192,7 +192,7 @@ public class Main {
 
 			glUseProgram(shaderProgram);
 			glBindVertexArray(VAO);
-			glDrawArrays(GL_TRIANGLES, 0, 3);
+			glDrawArrays(GL_TRIANGLES, 0, vertices.length / 3);
 
 			glfwSwapBuffers(window); // swap the color buffers
 
