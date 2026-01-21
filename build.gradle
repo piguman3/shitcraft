@@ -57,13 +57,3 @@ test {
 }
 
 
-distributions {
-    main {
-        contents {
-            into('resources'){
-                from 'resources'
-            }
-        }
-    }
-}
-

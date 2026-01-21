@@ -11,9 +11,6 @@ import java.nio.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
-//import the OpenGL classes, Buffer utilities, and GLFW classes
-import org.lwjgl.opengl.*;
-
 import static org.lwjgl.glfw.GLFW.*;
  
 //import all of the necessary OpenGL functions statically so they can be easily accessed
@@ -63,7 +60,7 @@ public class Main {
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 
 		// Create the window
-		window = glfwCreateWindow(300, 300, "Hello World!", NULL, NULL);
+		window = glfwCreateWindow(300, 300, "shitcraft Lambda v0.0.1", NULL, NULL);
 		if ( window == NULL )
 			throw new RuntimeException("Failed to create the GLFW window");
 
@@ -109,90 +106,61 @@ public class Main {
 		// bindings available for use.
 		GL.createCapabilities();
 
-		String vertexShaderStr = "#version 130\r\n" +
-						"\r\n" +
-						"in vec3 aPos;\r\n" +
-						"\r\n" +
-						"void main() {\r\n" +
-						"    gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\r\n" +
-						"}";
-
-		String fragmentShaderStr = "#version 130\r\n" +
-						"out vec4 FragColor;\r\n" +
-						"void main()\r\n" +
-						"{\r\n" +
-						"    FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\r\n" +
-						"}";
-
 		// Set the clear color
 		glClearColor(0.0f, 0.0f, 1.0f, 0.0f);
 
-		float[] vertices = {
+		float[] verticesQuad = {
 			-0.5f, 0.5f, 0.0f,
 			0.5f, -0.5f, 0.0f,
-			0.5f, 0.5f, 0.0f
+			0.5f, 0.5f, 0.0f,
+			-0.5f, 0.5f, 0.0f,
+			0.5f, -0.5f, 0.0f,
+			-0.5f, -0.5f, 0.0f
 		};
-		
-		// TODO: move all this trash to proper classes (i.e shaders)
-		FloatBuffer vertexData = BufferUtils.createFloatBuffer(vertices.length);
-		vertexData.put(vertices);
-		vertexData.flip();
 
-		int VAO;
-		int VBO;
-		try ( MemoryStack stack = stackPush() ) {
-			IntBuffer VAObuf = stack.mallocInt(1);
-			glGenVertexArrays(VAObuf);
-			VAO = VAObuf.get();
+		float[] verticesTri = {
+			-0.5f, -0.5f, 0.0f,
+			0.5f, -0.5f, 0.0f,
+			0.0f, 0.5f, 0.0f,
+		};
 
-			glBindVertexArray(VAO);
+		Mesh square = new Mesh(verticesQuad);
+		Mesh triangle = new Mesh(verticesTri);
 
-			IntBuffer VBObuf = stack.mallocInt(1);
-			glGenBuffers(VBObuf);
-			VBO = VBObuf.get();
-			glBindBuffer(GL_ARRAY_BUFFER, VBO);
-			glBufferData(GL_ARRAY_BUFFER, vertexData, GL_STATIC_DRAW);
+		Shader vertexShader = new Shader(GL_VERTEX_SHADER);
+		Shader fragmentShader = new Shader(GL_FRAGMENT_SHADER);
+
+		try {
+			vertexShader.loadFile("vert.glsl");
+			fragmentShader.loadFile("frag.glsl");
+		} catch (Exception e) {
+			System.out.println("Error loading shaders: " + e);
 		}
 
-		int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-		glShaderSource(vertexShader, vertexShaderStr);
-		glCompileShader(vertexShader);
+		ShaderProgram program = new ShaderProgram();
+		program.attachShader(vertexShader);
+		program.attachShader(fragmentShader);
 
-		int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-		glShaderSource(fragmentShader, fragmentShaderStr);
-		glCompileShader(fragmentShader);
-
-		if (glGetShaderi(vertexShader, GL_COMPILE_STATUS) == 0) {
-			System.out.println("Error compiling Shader code: " + glGetShaderInfoLog(vertexShader, 1024));
+		try {
+			program.link();
+		} catch (Exception e) {
+			System.out.println(e);
 		}
 
-		if (glGetShaderi(fragmentShader, GL_COMPILE_STATUS) == 0) {
-			System.out.println("Error compiling Shader code: " + glGetShaderInfoLog(fragmentShader, 1024));
-		}
+		vertexShader.delete();
+		fragmentShader.delete();
 
-		int shaderProgram = glCreateProgram();
-		glAttachShader(shaderProgram, vertexShader);
-		glAttachShader(shaderProgram, fragmentShader);
-		glLinkProgram(shaderProgram);
-
-		if (glGetProgrami(shaderProgram, GL_LINK_STATUS) == 0) {
-			System.out.println("Error linking Shader code: " + glGetProgramInfoLog(shaderProgram, 1024));
-		}
-
-		glDeleteShader(vertexShader);
-		glDeleteShader(fragmentShader);
-
-		glVertexAttribPointer(0, 3, GL_FLOAT, false, 3 * 4, 0);
-		glEnableVertexAttribArray(0);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 		// Run the rendering loop until the user has attempted to close
 		// the window or has pressed the ESCAPE key.
 		while ( !glfwWindowShouldClose(window) ) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
-			glUseProgram(shaderProgram);
-			glBindVertexArray(VAO);
-			glDrawArrays(GL_TRIANGLES, 0, vertices.length / 3);
+			program.use();
+
+			square.draw();
+			triangle.draw();
 
 			glfwSwapBuffers(window); // swap the color buffers
 
