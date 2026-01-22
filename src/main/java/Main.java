@@ -16,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
 import org.joml.*;
+import java.lang.Math;
 
 import static org.lwjgl.glfw.GLFW.*;
  
@@ -156,6 +157,7 @@ public class Main {
 		fragmentShader.delete();
 
 		// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		FloatBuffer fb = BufferUtils.createFloatBuffer(16);
 
 		// Run the rendering loop until the user has attempted to close
 		// the window or has pressed the ESCAPE key.
@@ -163,6 +165,10 @@ public class Main {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
 			program.use();
+
+			new Matrix4f().rotate((float)(glfwGetTime() * Math.PI * 0.5f), 0.0f, 0.0f, 1.0f).get(fb);
+
+			program.setMat("transform", fb);
 
 			triangle.draw();
 

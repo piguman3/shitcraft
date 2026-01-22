@@ -1,5 +1,7 @@
 import static org.lwjgl.opengl.GL20.*;
 
+import java.nio.FloatBuffer;
+
 public class ShaderProgram {
     int id;
 
@@ -33,5 +35,9 @@ public class ShaderProgram {
 
     void setFloat(String name, float value)  {
         glUniform1f(glGetUniformLocation(this.id, name), value);
+    }
+
+    void setMat(String name, FloatBuffer mat) {
+        glUniformMatrix4fv(glGetUniformLocation(this.id, name), false, mat);
     }
 }
