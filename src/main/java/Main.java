@@ -15,6 +15,8 @@ import java.nio.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
+import org.joml.*;
+
 import static org.lwjgl.glfw.GLFW.*;
  
 //import all of the necessary OpenGL functions statically so they can be easily accessed
