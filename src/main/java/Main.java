@@ -19,8 +19,7 @@ import static org.lwjgl.glfw.GLFW.*;
  
 //import all of the necessary OpenGL functions statically so they can be easily accessed
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
-import static org.lwjgl.opengl.GL13.glActiveTexture;
+import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
@@ -126,48 +125,10 @@ public class Main {
 			0.5f, 0.5f, 0.0f, 1.0f, 0.5f, 1.0f, 1.0f, 1.0f,
 		};
 
-		// Texture testing start
-
-		int width;
-		int height;
-		ByteBuffer imageBuffer;
-		int textureID = -1;
-
-		try ( MemoryStack stack = stackPush() ) {
-			IntBuffer w = stack.mallocInt(1);
-			IntBuffer h = stack.mallocInt(1);
-			IntBuffer channels = stack.mallocInt(1);
-			IntBuffer tid = stack.mallocInt(1);
-
-			ByteBuffer imageContents = Resource.getResourceFileAsByteBuffer("test.png");
-
-			STBImage.stbi_set_flip_vertically_on_load(true);
-			imageBuffer = STBImage.stbi_load_from_memory(imageContents, w, h, channels, 4);
-			
-			width = w.get();
-			height = h.get();
-		
-			glGenTextures(tid);
-			textureID = tid.get();
-			glBindTexture(GL_TEXTURE_2D, textureID);
-
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA,
-						 GL_UNSIGNED_BYTE, imageBuffer);
-			glGenerateMipmap(GL_TEXTURE_2D);
-
-			STBImage.stbi_image_free(imageBuffer);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// Texture testing end
+		Texture texture = Texture.loadTexture("test.png");
 
 		Mesh triangle = new Mesh(verticesTri);
+		triangle.setTexture(texture);
 
 		Shader vertexShader = new Shader(GL_VERTEX_SHADER);
 		Shader fragmentShader = new Shader(GL_FRAGMENT_SHADER);
@@ -201,10 +162,6 @@ public class Main {
 
 			program.use();
 
-			if (textureID!=-1) {
-				glActiveTexture(GL_TEXTURE0);
-				glBindTexture(GL_TEXTURE_2D, textureID);
-			}
 			triangle.draw();
 
 			glfwSwapBuffers(window); // swap the color buffers

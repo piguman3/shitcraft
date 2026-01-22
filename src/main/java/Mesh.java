@@ -1,6 +1,15 @@
 import org.lwjgl.system.*;
 
+import static org.lwjgl.opengl.GL11.GL_FLOAT;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.glDrawArrays;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
+import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.*;
 
 import java.nio.FloatBuffer;
@@ -14,6 +23,7 @@ public class Mesh {
 	int VBO;
     float[] vertices;
     FloatBuffer vertexBuffer;
+	Texture texture;
 
     public void upload() {
         if (this.vertexBuffer == null || this.vertexBuffer.capacity() != this.vertices.length)
@@ -54,7 +64,15 @@ public class Mesh {
         this.upload();
     }
 
+	public void setTexture(Texture texture) {
+		this.texture = texture;
+	}
+
 	public void draw() {
+		if (this.texture!=null) {
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, this.texture.id);
+		}
 		glBindVertexArray(this.VAO);
 		glDrawArrays(GL_TRIANGLES, 0, this.vertexBuffer.capacity() / 3);
 	}
