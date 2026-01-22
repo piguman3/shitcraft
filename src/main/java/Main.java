@@ -19,6 +19,8 @@ import static org.lwjgl.glfw.GLFW.*;
  
 //import all of the necessary OpenGL functions statically so they can be easily accessed
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
@@ -198,8 +200,10 @@ public class Main {
 
 			program.use();
 
-			if (textureID!=-1)
+			if (textureID!=-1) {
+				glActiveTexture(GL_TEXTURE0);
 				glBindTexture(GL_TEXTURE_2D, textureID);
+			}
 			triangle.draw();
 
 			glfwSwapBuffers(window); // swap the color buffers
