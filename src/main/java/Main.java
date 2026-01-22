@@ -143,7 +143,6 @@ public class Main {
 
 			STBImage.stbi_set_flip_vertically_on_load(true);
 			imageBuffer = STBImage.stbi_load_from_memory(imageContents, w, h, channels, 4);
-			System.out.println(channels.get());
 			
 			width = w.get();
 			height = h.get();
