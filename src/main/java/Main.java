@@ -142,7 +142,9 @@ public class Main {
 			ByteBuffer imageContents = Resource.getResourceFileAsByteBuffer("test.png");
 
 			STBImage.stbi_set_flip_vertically_on_load(true);
-			imageBuffer = STBImage.stbi_load_from_memory(imageContents, w, h, channels, 3);
+			imageBuffer = STBImage.stbi_load_from_memory(imageContents, w, h, channels, 4);
+			System.out.println(channels.get());
+			
 			width = w.get();
 			height = h.get();
 		
@@ -155,7 +157,7 @@ public class Main {
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA,
 						 GL_UNSIGNED_BYTE, imageBuffer);
 			glGenerateMipmap(GL_TEXTURE_2D);
 
