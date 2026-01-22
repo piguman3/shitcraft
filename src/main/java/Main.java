@@ -2,11 +2,15 @@ import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
+import org.lwjgl.stb.STBIIOCallbacks;
+import org.lwjgl.stb.STBImage;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.nio.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
@@ -60,7 +64,7 @@ public class Main {
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 
 		// Create the window
-		window = glfwCreateWindow(300, 300, "shitcraft Lambda v0.0.1", NULL, NULL);
+		window = glfwCreateWindow(400, 400, "shitcraft Lambda v0.0.1", NULL, NULL);
 		if ( window == NULL )
 			throw new RuntimeException("Failed to create the GLFW window");
 
@@ -109,11 +113,56 @@ public class Main {
 		// Set the clear color
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
+		// TODO: change mesh format so vertices, colors and textureUVs are separate arrays
 		float[] verticesTri = {
-			-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
-			0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
-			0.0f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f
+			// positions        // colors         // UVs
+			-0.5f, -0.5f, 0.0f, 1.0f, 0.5f, 0.5f, 0.0f, 0.0f,
+			0.5f, -0.5f, 0.0f, 0.5f, 1.0f, 0.5f, 1.0f, 0.0f,
+			-0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 1.0f, 0.0f, 1.0f,
+			-0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 1.0f, 0.0f, 1.0f,
+			0.5f, -0.5f, 0.0f, 0.5f, 1.0f, 0.5f, 1.0f, 0.0f,
+			0.5f, 0.5f, 0.0f, 1.0f, 0.5f, 1.0f, 1.0f, 1.0f,
 		};
+
+		// Texture testing start
+
+		int width;
+		int height;
+		ByteBuffer imageBuffer;
+		int textureID = -1;
+
+		try ( MemoryStack stack = stackPush() ) {
+			IntBuffer w = stack.mallocInt(1);
+			IntBuffer h = stack.mallocInt(1);
+			IntBuffer channels = stack.mallocInt(1);
+			IntBuffer tid = stack.mallocInt(1);
+
+			ByteBuffer imageContents = Resource.getResourceFileAsByteBuffer("test.png");
+
+			STBImage.stbi_set_flip_vertically_on_load(true);
+			imageBuffer = STBImage.stbi_load_from_memory(imageContents, w, h, channels, 3);
+			width = w.get();
+			height = h.get();
+		
+			glGenTextures(tid);
+			textureID = tid.get();
+			glBindTexture(GL_TEXTURE_2D, textureID);
+
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB,
+						 GL_UNSIGNED_BYTE, imageBuffer);
+			glGenerateMipmap(GL_TEXTURE_2D);
+
+			STBImage.stbi_image_free(imageBuffer);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// Texture testing end
 
 		Mesh triangle = new Mesh(verticesTri);
 
@@ -149,6 +198,8 @@ public class Main {
 
 			program.use();
 
+			if (textureID!=-1)
+				glBindTexture(GL_TEXTURE_2D, textureID);
 			triangle.draw();
 
 			glfwSwapBuffers(window); // swap the color buffers
