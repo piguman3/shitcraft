@@ -77,6 +77,6 @@ public class Mesh {
 			glBindTexture(GL_TEXTURE_2D, this.texture.id);
 		}
 		glBindVertexArray(this.VAO);
-		glDrawArrays(GL_TRIANGLES, 0, this.vertexBuffer.capacity() / 3);
+		glDrawArrays(GL_TRIANGLES, 0, this.vertexBuffer.capacity() / 8);
 	}
 }

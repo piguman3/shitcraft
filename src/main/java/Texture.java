@@ -39,7 +39,7 @@ public class Texture {
 			IntBuffer channels = stack.mallocInt(1);
 			IntBuffer tid = stack.mallocInt(1);
 
-			ByteBuffer imageContents = Resource.getResourceFileAsByteBuffer("test.png");
+			ByteBuffer imageContents = Resource.getResourceFileAsByteBuffer("atlas.png");
 
 			STBImage.stbi_set_flip_vertically_on_load(true);
 			imageBuffer = STBImage.stbi_load_from_memory(imageContents, w, h, channels, 4);

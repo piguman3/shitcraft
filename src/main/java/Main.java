@@ -117,21 +117,76 @@ public class Main {
 		// Set the clear color
 		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
+		glEnable(GL_DEPTH_TEST);
+
 		// TODO: change mesh format so vertices, colors and textureUVs are separate arrays
-		float[] verticesTri = {
-			// positions        // colors         // UVs
+		float cubeData[] = {
+			//back
+			-0.5f, -0.5f, -0.5f,1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+			0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+			0.5f, 0.5f, -0.5f,  1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+			0.5f, 0.5f, -0.5f,  1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+			-0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+			-0.5f, -0.5f, -0.5f,1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+
+			// front
 			-0.5f, -0.5f, 0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
 			0.5f, -0.5f, 0.5f,  1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-			-0.5f, 0.5f, 0.5f,  1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-			-0.5f, 0.5f, 0.5f,  1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-			0.5f, -0.5f, 0.5f,  1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
 			0.5f, 0.5f, 0.5f,   1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+			0.5f, 0.5f, 0.5f,   1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 
+			-0.5f, 0.5f, 0.5f,  1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+			-0.5f, -0.5f, 0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+
+			// left
+			-0.5f, 0.5f, 0.5f,  1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+			-0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+			-0.5f, -0.5f, -0.5f,1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+			-0.5f, -0.5f, -0.5f,1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+			-0.5f, -0.5f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+			-0.5f, 0.5f, 0.5f,  1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+
+			// right
+			0.5f, 0.5f, 0.5f,   1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+			0.5f, 0.5f, -0.5f,  1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+			0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+			0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+			0.5f, -0.5f, 0.5f,  1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+			0.5f, 0.5f, 0.5f,   1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+
+			// bottom
+			-0.5f, -0.5f, -0.5f,1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+			0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+			0.5f, -0.5f, 0.5f,  1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+			0.5f, -0.5f, 0.5f,  1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+			-0.5f, -0.5f, 0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+			-0.5f, -0.5f, -0.5f,1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+
+			// top
+			-0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+			0.5f, 0.5f, -0.5f,  1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+			0.5f, 0.5f, 0.5f,   1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+			0.5f, 0.5f, 0.5f,   1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+			-0.5f, 0.5f, 0.5f,  1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+			-0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f
 		};
 
-		Texture texture = Texture.loadTexture("test.png");
+		for (int x=6; x<cubeData.length; x+=8) {
+			cubeData[x] = (cubeData[x]) / 16.0f;
+			cubeData[x+1] = (cubeData[x+1] + 15.0f) / 16.0f;
+		}
 
-		Mesh triangle = new Mesh(verticesTri);
-		triangle.setTexture(texture);
+		for (int x=8*24+6; x<cubeData.length; x+=8) {
+			cubeData[x] += 1 / 16.0f;
+		}
+
+		for (int x=8*30+6; x<cubeData.length; x+=8) {
+			cubeData[x] += 1 / 16.0f;
+		}
+
+		Texture texture = Texture.loadTexture("atlas.png");
+
+		Mesh cube = new Mesh(cubeData);
+		cube.setTexture(texture);
 
 		Shader vertexShader = new Shader(GL_VERTEX_SHADER);
 		Shader fragmentShader = new Shader(GL_FRAGMENT_SHADER);
@@ -168,15 +223,16 @@ public class Main {
 
 			program.use();
 
-			Matrix4f view = new Matrix4f().lookAt(0.0f, 0.0f, 4.0f,
+			Matrix4f view = new Matrix4f().lookAt(0.0f, 4.0f, 4.0f,
                     					 0.0f, 0.0f, 0.0f,
                       						 0.0f, 1.0f, 0.0f);
 			program.setMat("view", view);
 
-			Matrix4f model = new Matrix4f().rotate((float)(glfwGetTime() * Math.PI * 0.5f), 1.0f, 0.0f, 0.0f);
+			Matrix4f model = new Matrix4f().rotate((float)(glfwGetTime() * Math.PI * 0.5f), 0.0f, 1.0f, 0.0f)
+				.rotate((float)(glfwGetTime() * Math.PI * 0.6f), 0.0f, 0.0f, 1.0f);
 			program.setMat("model", model);
 
-			triangle.draw();
+			cube.draw();
 
 			glfwSwapBuffers(window); // swap the color buffers
 
