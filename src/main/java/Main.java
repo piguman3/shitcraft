@@ -68,7 +68,7 @@ public class Main {
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 
 		// Create the window
-		window = glfwCreateWindow(400, 400, "shitcraft Lambda v0.0.1", NULL, NULL);
+		window = glfwCreateWindow(800, 600, "shitcraft Lambda v0.0.1", NULL, NULL);
 		if ( window == NULL )
 			throw new RuntimeException("Failed to create the GLFW window");
 
@@ -120,12 +120,12 @@ public class Main {
 		// TODO: change mesh format so vertices, colors and textureUVs are separate arrays
 		float[] verticesTri = {
 			// positions        // colors         // UVs
-			-0.5f, -0.5f, 0.0f, 1.0f, 0.5f, 0.5f, 0.0f, 0.0f,
-			0.5f, -0.5f, 0.0f, 0.5f, 1.0f, 0.5f, 1.0f, 0.0f,
-			-0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 1.0f, 0.0f, 1.0f,
-			-0.5f, 0.5f, 0.0f, 0.5f, 0.5f, 1.0f, 0.0f, 1.0f,
-			0.5f, -0.5f, 0.0f, 0.5f, 1.0f, 0.5f, 1.0f, 0.0f,
-			0.5f, 0.5f, 0.0f, 1.0f, 0.5f, 1.0f, 1.0f, 1.0f,
+			-0.5f, -0.5f, 0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+			0.5f, -0.5f, 0.5f,  1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+			-0.5f, 0.5f, 0.5f,  1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+			-0.5f, 0.5f, 0.5f,  1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+			0.5f, -0.5f, 0.5f,  1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+			0.5f, 0.5f, 0.5f,   1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
 		};
 
 		Texture texture = Texture.loadTexture("test.png");
@@ -157,7 +157,9 @@ public class Main {
 		fragmentShader.delete();
 
 		// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		FloatBuffer fb = BufferUtils.createFloatBuffer(16);
+		program.use();
+		Matrix4f perspective = new Matrix4f().perspective((float) Math.toRadians(45.0f), 8.0f/6.0f, 0.01f, 100.0f);
+		program.setMat("projection", perspective);
 
 		// Run the rendering loop until the user has attempted to close
 		// the window or has pressed the ESCAPE key.
@@ -166,9 +168,13 @@ public class Main {
 
 			program.use();
 
-			new Matrix4f().rotate((float)(glfwGetTime() * Math.PI * 0.5f), 0.0f, 0.0f, 1.0f).get(fb);
+			Matrix4f view = new Matrix4f().lookAt(0.0f, 0.0f, 4.0f,
+                    					 0.0f, 0.0f, 0.0f,
+                      						 0.0f, 1.0f, 0.0f);
+			program.setMat("view", view);
 
-			program.setMat("transform", fb);
+			Matrix4f model = new Matrix4f().rotate((float)(glfwGetTime() * Math.PI * 0.5f), 1.0f, 0.0f, 0.0f);
+			program.setMat("model", model);
 
 			triangle.draw();
 

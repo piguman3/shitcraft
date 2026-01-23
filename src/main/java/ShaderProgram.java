@@ -2,6 +2,9 @@ import static org.lwjgl.opengl.GL20.*;
 
 import java.nio.FloatBuffer;
 
+import org.joml.*;
+import org.lwjgl.BufferUtils;
+
 public class ShaderProgram {
     int id;
 
@@ -37,7 +40,9 @@ public class ShaderProgram {
         glUniform1f(glGetUniformLocation(this.id, name), value);
     }
 
-    void setMat(String name, FloatBuffer mat) {
-        glUniformMatrix4fv(glGetUniformLocation(this.id, name), false, mat);
+    void setMat(String name, Matrix4f mat) {
+        FloatBuffer fb = BufferUtils.createFloatBuffer(16);
+        mat.get(fb);
+        glUniformMatrix4fv(glGetUniformLocation(this.id, name), false, fb);
     }
 }

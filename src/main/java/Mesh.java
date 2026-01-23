@@ -52,13 +52,16 @@ public class Mesh {
 			glBindBuffer(GL_ARRAY_BUFFER, this.VBO);
 		}
 
+		// Position
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 8 * 4, 0);
 		glEnableVertexAttribArray(0);
 
+		// Vertex color
 		glVertexAttribPointer(1, 3, GL_FLOAT, false, 8 * 4, 3 * 4);
 		glEnableVertexAttribArray(1);
 
-		glVertexAttribPointer(2, 3, GL_FLOAT, false, 8 * 4, 6 * 4);
+		// UVs
+		glVertexAttribPointer(2, 2, GL_FLOAT, false, 8 * 4, 6 * 4);
 		glEnableVertexAttribArray(2);
 
         this.upload();
