@@ -78,6 +78,10 @@ public class Main {
 				glfwSetWindowShouldClose(window, true); // We will detect this in the rendering loop
 		});
 
+		glfwSetFramebufferSizeCallback(window, (window, width, height) -> {
+			glViewport(0, 0, width, height);
+		});
+
 		// Get the thread stack and push a new frame
 		try ( MemoryStack stack = stackPush() ) {
 			IntBuffer pWidth = stack.mallocInt(1); // int*
@@ -213,10 +217,12 @@ public class Main {
 		vertexShader.delete();
 		fragmentShader.delete();
 
+		Camera camera = new Camera(
+			new Vector3f(0.0f, 0.0f, -5.0f), 
+			new Vector3f(0.0f, 0.0f, 1.0f), 
+			new Vector3f(0.0f, 1.0f, 0.0f), 70.0f);
+
 		// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		program.use();
-		Matrix4f perspective = new Matrix4f().perspective((float) Math.toRadians(45.0f), 8.0f/6.0f, 0.01f, 100.0f);
-		program.setMat("projection", perspective);
 
 		// Run the rendering loop until the user has attempted to close
 		// the window or has pressed the ESCAPE key.
@@ -225,10 +231,7 @@ public class Main {
 
 			program.use();
 
-			Matrix4f view = new Matrix4f().lookAt(0.0f, 4.0f, 4.0f,
-                    					 0.0f, 0.0f, 0.0f,
-                      						 0.0f, 1.0f, 0.0f);
-			program.setMat("view", view);
+			camera.apply(program, window);
 
 			Matrix4f model = new Matrix4f().rotate((float)(glfwGetTime() * Math.PI * 0.5f), 0.0f, 1.0f, 0.0f)
 				.rotate((float)(glfwGetTime() * Math.PI * 0.6f), 0.0f, 0.0f, 1.0f);
