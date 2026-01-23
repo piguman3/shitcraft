@@ -119,7 +119,9 @@ public class Main {
 
 		glEnable(GL_DEPTH_TEST);
 
-		// TODO: change mesh format so vertices, colors and textureUVs are separate arrays
+		// TODO: refactor matrix code (Camera class?)
+		// TODO: make window resizing work
+		// TODO: player input
 		float cubeData[] = {
 			//back
 			-0.5f, -0.5f, -0.5f,1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
