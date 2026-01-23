@@ -218,8 +218,8 @@ public class Main {
 		fragmentShader.delete();
 
 		Camera camera = new Camera(
-			new Vector3f(0.0f, 0.0f, -5.0f), 
-			new Vector3f(0.0f, 0.0f, 1.0f), 
+			new Vector3f(0.0f, 10.0f, -10.0f), 
+			new Vector3f(0.0f, -1.0f, 1.0f), 
 			new Vector3f(0.0f, 1.0f, 0.0f), 70.0f);
 
 		// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -233,11 +233,17 @@ public class Main {
 
 			camera.apply(program, window);
 
-			Matrix4f model = new Matrix4f().rotate((float)(glfwGetTime() * Math.PI * 0.5f), 0.0f, 1.0f, 0.0f)
-				.rotate((float)(glfwGetTime() * Math.PI * 0.6f), 0.0f, 0.0f, 1.0f);
-			program.setMat("model", model);
-
-			cube.draw();
+			for (int x=0; x<16; x++) {
+				for (int y=0; y<16; y++) {
+					Matrix4f model = new Matrix4f()
+						.rotate((float)(glfwGetTime() * Math.PI * 0.1f), 0.0f, 1.0f, 0.0f)
+						.translate(x - 7.5f, 
+							((float)Math.sin((glfwGetTime() * 2.0f + y * 0.5f)) + 
+							(float)Math.sin((glfwGetTime() * 2.0f + x * 0.5f))) * 2.0f, y - 7.5f);
+					program.setMat("model", model);
+					cube.draw();
+				}
+			}
 
 			glfwSwapBuffers(window); // swap the color buffers
 
