@@ -123,9 +123,9 @@ public class Main {
 
 		glEnable(GL_DEPTH_TEST);
 
-		// TODO: refactor matrix code (Camera class?)
-		// TODO: make window resizing work
-		// TODO: player input
+		// TODO: camera debug input
+		// TODO: start work on chunks
+		// TODO: start work on networking (and server)
 		float cubeData[] = {
 			//back
 			-0.5f, -0.5f, -0.5f,1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
