@@ -15,7 +15,7 @@ public class Texture {
     public int height;
     public int id;
 
-    private static HashMap<String, Texture> map = new HashMap<String, Texture>();
+    private static HashMap<String, Texture> map = new HashMap<>();
 
     public Texture(int width, int height, int id) {
         this.width = width;

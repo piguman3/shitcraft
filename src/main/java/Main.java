@@ -126,73 +126,31 @@ public class Main {
 		// TODO: camera debug input
 		// TODO: start work on chunks
 		// TODO: start work on networking (and server)
-		float cubeData[] = {
-			//back
-			-0.5f, -0.5f, -0.5f,1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-			0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-			0.5f, 0.5f, -0.5f,  1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-			0.5f, 0.5f, -0.5f,  1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-			-0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-			-0.5f, -0.5f, -0.5f,1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
 
-			// front
-			-0.5f, -0.5f, 0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-			0.5f, -0.5f, 0.5f,  1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-			0.5f, 0.5f, 0.5f,   1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-			0.5f, 0.5f, 0.5f,   1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 
-			-0.5f, 0.5f, 0.5f,  1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-			-0.5f, -0.5f, 0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+		Chunk[][][] world = new Chunk[2][1][2];
 
-			// left
-			-0.5f, 0.5f, 0.5f,  1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-			-0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-			-0.5f, -0.5f, -0.5f,1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-			-0.5f, -0.5f, -0.5f,1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-			-0.5f, -0.5f, 0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-			-0.5f, 0.5f, 0.5f,  1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
+		Vector3i chunkSize = new Vector3i(16, 16, 16);
+		Vector2i atlasSize = new Vector2i(16, 16);
+		Texture atlas = Texture.loadTexture("atlas.png");
+		ChunkMesher mesher = new ChunkMesher(chunkSize, atlasSize, atlas);
 
-			// right
-			0.5f, 0.5f, 0.5f,   1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-			0.5f, 0.5f, -0.5f,  1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-			0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-			0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-			0.5f, -0.5f, 0.5f,  1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-			0.5f, 0.5f, 0.5f,   1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-
-			// bottom
-			-0.5f, -0.5f, -0.5f,1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-			0.5f, -0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-			0.5f, -0.5f, 0.5f,  1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-			0.5f, -0.5f, 0.5f,  1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-			-0.5f, -0.5f, 0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-			-0.5f, -0.5f, -0.5f,1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-
-			// top
-			-0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-			0.5f, 0.5f, -0.5f,  1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-			0.5f, 0.5f, 0.5f,   1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-			0.5f, 0.5f, 0.5f,   1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-			-0.5f, 0.5f, 0.5f,  1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-			-0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f
-		};
-
-		for (int x=6; x<cubeData.length; x+=8) {
-			cubeData[x] = (cubeData[x]) / 16.0f;
-			cubeData[x+1] = (cubeData[x+1] + 15.0f) / 16.0f;
+		for (int cx=0; cx<world.length; cx++) {
+			for (int cy=0; cy<world[cx].length; cy++) {
+				for (int cz=0; cz<world[cx][cy].length; cz++) {
+					world[cx][cy][cz] = new Chunk(16, 16, 16);
+					Chunk chunk = world[cx][cy][cz];
+					for (int x=0; x<chunk.blocks.length; x++) {
+						for (int y=0; y<chunk.blocks[x].length; y++) {
+							for (int z=0; z<chunk.blocks[x][y].length; z++) {
+								chunk.setBlock(10.0f <= y ? Block.dirt : Block.air,
+									x, y, z);
+							}
+						}
+					}
+					mesher.genChunk(new Vector3i(cx, cy, cz), chunk);
+				}
+			}
 		}
-
-		for (int x=8*24+6; x<cubeData.length; x+=8) {
-			cubeData[x] += 1 / 16.0f;
-		}
-
-		for (int x=8*30+6; x<cubeData.length; x+=8) {
-			cubeData[x] += 1 / 16.0f;
-		}
-
-		Texture texture = Texture.loadTexture("atlas.png");
-
-		Mesh cube = new Mesh(cubeData);
-		cube.setTexture(texture);
 
 		Shader vertexShader = new Shader(GL_VERTEX_SHADER);
 		Shader fragmentShader = new Shader(GL_FRAGMENT_SHADER);
@@ -218,7 +176,7 @@ public class Main {
 		fragmentShader.delete();
 
 		Camera camera = new Camera(
-			new Vector3f(0.0f, 10.0f, -10.0f), 
+			new Vector3f(0.0f, 30.0f, -30.0f), 
 			new Vector3f(0.0f, -1.0f, 1.0f), 
 			new Vector3f(0.0f, 1.0f, 0.0f), 70.0f);
 
@@ -233,17 +191,7 @@ public class Main {
 
 			camera.apply(program, window);
 
-			for (int x=0; x<16; x++) {
-				for (int y=0; y<16; y++) {
-					Matrix4f model = new Matrix4f()
-						.rotate((float)(glfwGetTime() * Math.PI * 0.1f), 0.0f, 1.0f, 0.0f)
-						.translate(x - 7.5f, 
-							((float)Math.sin((glfwGetTime() * 2.0f + y * 0.5f)) + 
-							(float)Math.sin((glfwGetTime() * 2.0f + x * 0.5f))) * 2.0f, y - 7.5f);
-					program.setMat("model", model);
-					cube.draw();
-				}
-			}
+			mesher.draw(program);
 
 			glfwSwapBuffers(window); // swap the color buffers
 

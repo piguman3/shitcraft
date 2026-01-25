@@ -14,6 +14,7 @@ import static org.lwjgl.opengl.GL30.*;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.ArrayList;
 
 import org.lwjgl.BufferUtils;
 import static org.lwjgl.system.MemoryStack.*;
@@ -24,6 +25,8 @@ public class Mesh {
     float[] vertices;
     FloatBuffer vertexBuffer;
 	Texture texture;
+
+	public static int VERTEX_SIZE = 8;
 
     public void upload() {
         if (this.vertexBuffer == null || this.vertexBuffer.capacity() != this.vertices.length)
