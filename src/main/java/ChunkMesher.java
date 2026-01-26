@@ -76,7 +76,7 @@ public class ChunkMesher {
         this.atlas = atlas;
     }
 
-    public void genChunk(Vector3i pos, Chunk chunk) {
+    public void genChunk(Vector3i pos, Chunk chunk, Chunk north, Chunk south, Chunk east, Chunk west) {
         ArrayList<Float> data = new ArrayList<>();
 
         for (int x=0; x<chunk.blocks.length; x++) {
@@ -85,9 +85,29 @@ public class ChunkMesher {
                     for (Vector3i key : FACES.keySet()) {
                         Vector3i checkPos = new Vector3i(x + key.x, y + key.y, z + key.z);
                         Block checkBlock = chunk.getBlock(checkPos);
+
+                        // If block is outside of chunk, check chunks around it
+                        if (checkBlock==null) {
+                            if (checkPos.x<0 && west!=null) {
+                                checkPos.x = this.chunkSize.x - 1;
+                                checkBlock = west.getBlock(checkPos);
+                            } else if (checkPos.x>=this.chunkSize.x && east!=null) {
+                                checkPos.x = 0;
+                                checkBlock = east.getBlock(checkPos);
+                            }
+
+                            if (checkPos.z<0 && south!=null) {
+                                checkPos.z = this.chunkSize.z - 1;
+                                checkBlock = south.getBlock(checkPos);
+                            } else if (checkPos.z>=this.chunkSize.z && north!=null) {
+                                checkPos.z = 0;
+                                checkBlock = north.getBlock(checkPos);
+                            }
+                        }
+
                         Block currentBlock = chunk.getBlock(x, y, z);
 
-                        if ((checkBlock==Block.air || checkBlock==null)&& 
+                        if ((checkBlock==Block.air || checkBlock==null) && 
                             currentBlock!=Block.air) {
                             Float[] face = FACES.get(key);
                             Collections.addAll(data, face);
@@ -129,7 +149,9 @@ public class ChunkMesher {
             key.mul(this.chunkSize, chunkPos);
             Matrix4f model = new Matrix4f()
                         .rotate((float)(time * Math.PI * 0.1f), 0.0f, 1.0f, 0.0f)
-						.translate(new Vector3f(chunkPos).sub(new Vector3f(this.chunkSize).mul(0.5f)));
+						.translate(
+                new Vector3f(chunkPos).sub(new Vector3f(this.chunkSize.x, 1.0f, this.chunkSize.z)
+                .mul(1.5f)));
 
 			program.setMat("model", model);
             this.meshes.get(key).draw();

@@ -128,26 +128,24 @@ public class Main {
 		// TODO: chunk mesh unloading
 		// TODO: start work on networking (and server)
 
-		Chunk[][][] world = new Chunk[1][1][1];
+		Chunk[][][] world = new Chunk[3][3][1];
 
 		Vector3i chunkSize = new Vector3i(16, 16, 16);
 		Vector2i atlasSize = new Vector2i(16, 16);
 		Texture atlas = Texture.loadTexture("atlas.png");
 		ChunkMesher mesher = new ChunkMesher(chunkSize, atlasSize, atlas);
 
+		NoiseGenerator noise = new NoiseGenerator(67);
+
+		// World gen
 		for (int cx=0; cx<world.length; cx++) {
 			for (int cz=0; cz<world[cx].length; cz++) {
 				for (int cy=0; cy<world[cx][cz].length; cy++) {
-					world[cx][cz][cy] = new Chunk(16, 16, 16);
+					world[cx][cz][cy] = new Chunk(chunkSize.x, chunkSize.y, chunkSize.z);
 					Chunk chunk = world[cx][cz][cy];
 					for (int x=0; x<chunk.blocks.length; x++) {
 						for (int z=0; z<chunk.blocks[x][0].length; z++) {
-							int height = 8 + (int)Math.round(
-								Math.sin((z + cz * 16) * 0.3f) * 2 + 
-								Math.cos((x + cx * 16) * 0.4f + 0.6f) + 
-								Math.cos((x + cx * 16) * 0.2f + 0.24f) +
-								Math.sin((x + cx * 16 + z + cz * 16) * 0.1f + 0.1f) * 2
-							);
+							int height = (int)Math.round(noise.noise(x + cx * chunkSize.x, z + cz * chunkSize.z) * 16 + 8);
 							for (int y=0; y<chunk.blocks[x].length; y++) {
 								chunk.setBlock(height > y ? Block.dirt : Block.air,
 									x, y, z);
@@ -156,7 +154,24 @@ public class Main {
 							}
 						}
 					}
-					mesher.genChunk(new Vector3i(cx, cy, cz), chunk);
+				}
+			}
+		}
+
+		// Mesh gen
+		for (int cx=0; cx<world.length; cx++) {
+			for (int cz=0; cz<world[cx].length; cz++) {
+				for (int cy=0; cy<world[cx][cz].length; cy++) {
+					Chunk center = world[cx][cz][cy];
+					Chunk north = null;
+					Chunk south = null;
+					Chunk east = null;
+					Chunk west = null;
+					if (cz + 1 < world[0].length) {north = world[cx][cz+1][cy];}
+					if (cz - 1 >= 0) south = world[cx][cz-1][cy];
+					if (cx + 1 < world.length) east = world[cx+1][cz][cy];
+					if (cx - 1 >= 0) west = world[cx-1][cz][cy];
+					mesher.genChunk(new Vector3i(cx, cy, cz), center, north, south, east, west);
 				}
 			}
 		}
@@ -189,7 +204,7 @@ public class Main {
 			new Vector3f(0.0f, -1.0f, 1.0f), 
 			new Vector3f(0.0f, 1.0f, 0.0f), 90.0f);
 
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 		// Run the rendering loop until the user has attempted to close
 		// the window or has pressed the ESCAPE key.
