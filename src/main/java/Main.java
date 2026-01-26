@@ -128,14 +128,14 @@ public class Main {
 		// TODO: chunk mesh unloading
 		// TODO: start work on networking (and server)
 
-		Chunk[][][] world = new Chunk[3][3][1];
+		Chunk[][][] world = new Chunk[6][6][1];
 
 		Vector3i chunkSize = new Vector3i(16, 16, 16);
 		Vector2i atlasSize = new Vector2i(16, 16);
 		Texture atlas = Texture.loadTexture("atlas.png");
 		ChunkMesher mesher = new ChunkMesher(chunkSize, atlasSize, atlas);
 
-		NoiseGenerator noise = new NoiseGenerator(67);
+		NoiseGenerator noise = new NoiseGenerator(123456);
 
 		// World gen
 		for (int cx=0; cx<world.length; cx++) {
@@ -145,12 +145,20 @@ public class Main {
 					Chunk chunk = world[cx][cz][cy];
 					for (int x=0; x<chunk.blocks.length; x++) {
 						for (int z=0; z<chunk.blocks[x][0].length; z++) {
-							int height = (int)Math.round(noise.noise(x + cx * chunkSize.x, z + cz * chunkSize.z) * 16 + 8);
+							float sampleX = x + cx * chunkSize.x;
+							float sampleY = z + cz * chunkSize.z;
+							int height = (int)Math.round(noise.noise(sampleX / 1.5f, sampleY / 1.5f) * 10 + 4);
+							height = Math.max(3, height);
 							for (int y=0; y<chunk.blocks[x].length; y++) {
 								chunk.setBlock(height > y ? Block.dirt : Block.air,
 									x, y, z);
-								if (height == y)
-									chunk.setBlock(Block.grass, x, y, z);
+								if (height == y) {
+									if (y>3) {
+										chunk.setBlock(Block.grass, x, y, z);
+									} else {
+										chunk.setBlock(Block.water, x, y, z);
+									}
+								}
 							}
 						}
 					}
@@ -200,7 +208,7 @@ public class Main {
 		fragmentShader.delete();
 
 		Camera camera = new Camera(
-			new Vector3f(0.0f, 12.0f, -12.0f), 
+			new Vector3f(0.0f, 16.0f, -16.0f), 
 			new Vector3f(0.0f, -1.0f, 1.0f), 
 			new Vector3f(0.0f, 1.0f, 0.0f), 90.0f);
 

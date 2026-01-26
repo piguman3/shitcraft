@@ -151,7 +151,7 @@ public class ChunkMesher {
                         .rotate((float)(time * Math.PI * 0.1f), 0.0f, 1.0f, 0.0f)
 						.translate(
                 new Vector3f(chunkPos).sub(new Vector3f(this.chunkSize.x, 1.0f, this.chunkSize.z)
-                .mul(1.5f)));
+                .mul(3.0f)));
 
 			program.setMat("model", model);
             this.meshes.get(key).draw();

@@ -26,4 +26,5 @@ public class Block {
     public static Block air = new Block(0, 0, 0, 0);
     public static Block grass = new Block(1, 2, 0, 1);
     public static Block dirt = new Block(2, 1, 1, 1);
+    public static Block water = new Block(3, 3, 3, 3);
 }
