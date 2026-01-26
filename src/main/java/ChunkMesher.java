@@ -15,48 +15,48 @@ public class ChunkMesher {
     static  {
         //back
         FACES.put(new Vector3i(0, 0, -1), new Float[] {
-            0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-            1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-            1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-            1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-            0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-            0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f});
+            0.0f, 0.0f, 0.0f, 0.75f, 0.75f, 0.75f, 1.0f, 0.0f,
+            1.0f, 0.0f, 0.0f, 0.75f, 0.75f, 0.75f, 0.0f, 0.0f,
+            1.0f, 1.0f, 0.0f, 0.75f, 0.75f, 0.75f, 0.0f, 1.0f,
+            1.0f, 1.0f, 0.0f, 0.75f, 0.75f, 0.75f, 0.0f, 1.0f,
+            0.0f, 1.0f, 0.0f, 0.75f, 0.75f, 0.75f, 1.0f, 1.0f,
+            0.0f, 0.0f, 0.0f, 0.75f, 0.75f, 0.75f, 1.0f, 0.0f});
 
         // front
         FACES.put(new Vector3i(0, 0, 1), new Float[] {
-            0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-            1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-            1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 
-            0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f});
+            0.0f, 0.0f, 1.0f, 0.9f, 0.9f, 0.9f, 0.0f, 0.0f,
+            1.0f, 0.0f, 1.0f, 0.9f, 0.9f, 0.9f, 1.0f, 0.0f,
+            1.0f, 1.0f, 1.0f, 0.9f, 0.9f, 0.9f, 1.0f, 1.0f,
+            1.0f, 1.0f, 1.0f, 0.9f, 0.9f, 0.9f, 1.0f, 1.0f, 
+            0.0f, 1.0f, 1.0f, 0.9f, 0.9f, 0.9f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f, 0.9f, 0.9f, 0.9f, 0.0f, 0.0f});
 
         // left
         FACES.put(new Vector3i(-1, 0, 0), new Float[] {
-            0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-            0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-            0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-            0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f});
+            0.0f, 1.0f, 1.0f, 0.9f, 0.9f, 0.9f, 1.0f, 1.0f,
+            0.0f, 1.0f, 0.0f, 0.9f, 0.9f, 0.9f, 0.0f, 1.0f,
+            0.0f, 0.0f, 0.0f, 0.9f, 0.9f, 0.9f, 0.0f, 0.0f,
+            0.0f, 0.0f, 0.0f, 0.9f, 0.9f, 0.9f, 0.0f, 0.0f,
+            0.0f, 0.0f, 1.0f, 0.9f, 0.9f, 0.9f, 1.0f, 0.0f,
+            0.0f, 1.0f, 1.0f, 0.9f, 0.9f, 0.9f, 1.0f, 1.0f});
 
         // right
         FACES.put(new Vector3i(1, 0, 0), new Float[] {
-            1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-            1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-            1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-            1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-            1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-            1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f});
+            1.0f, 1.0f, 1.0f, 0.8f, 0.8f, 0.8f, 0.0f, 1.0f,
+            1.0f, 1.0f, 0.0f, 0.8f, 0.8f, 0.8f, 1.0f, 1.0f,
+            1.0f, 0.0f, 0.0f, 0.8f, 0.8f, 0.8f, 1.0f, 0.0f,
+            1.0f, 0.0f, 0.0f, 0.8f, 0.8f, 0.8f, 1.0f, 0.0f,
+            1.0f, 0.0f, 1.0f, 0.8f, 0.8f, 0.8f, 0.0f, 0.0f,
+            1.0f, 1.0f, 1.0f, 0.8f, 0.8f, 0.8f, 0.0f, 1.0f});
 
         // bottom
         FACES.put(new Vector3i(0, -1, 0), new Float[] {
-            0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-            1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-            1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-            1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-            0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f});
+            0.0f, 0.0f, 0.0f, 0.7f, 0.7f, 0.7f, 0.0f, 1.0f,
+            1.0f, 0.0f, 0.0f, 0.7f, 0.7f, 0.7f, 1.0f, 1.0f,
+            1.0f, 0.0f, 1.0f, 0.7f, 0.7f, 0.7f, 1.0f, 0.0f,
+            1.0f, 0.0f, 1.0f, 0.7f, 0.7f, 0.7f, 1.0f, 0.0f,
+            0.0f, 0.0f, 1.0f, 0.7f, 0.7f, 0.7f, 0.0f, 0.0f,
+            0.0f, 0.0f, 0.0f, 0.7f, 0.7f, 0.7f, 0.0f, 1.0f});
 
         // top
         FACES.put(new Vector3i(0, 1, 0), new Float[] {
@@ -85,9 +85,10 @@ public class ChunkMesher {
                     for (Vector3i key : FACES.keySet()) {
                         Vector3i checkPos = new Vector3i(x + key.x, y + key.y, z + key.z);
                         Block checkBlock = chunk.getBlock(checkPos);
+                        Block currentBlock = chunk.getBlock(x, y, z);
 
                         if ((checkBlock==Block.air || checkBlock==null)&& 
-                            chunk.getBlock(x, y, z)!=Block.air) {
+                            currentBlock!=Block.air) {
                             Float[] face = FACES.get(key);
                             Collections.addAll(data, face);
 
@@ -99,8 +100,10 @@ public class ChunkMesher {
                                 data.set(index + 2, data.get(index + 2) + z);
 
                                 // UVs
-                                data.set(index + 6, (data.get(index + 6)) / 16.0f);
-                                data.set(index + 7, (data.get(index + 7) + 15) / 16.0f);
+                                float uvx = currentBlock.sideTextures.get(key) % this.atlasSize.x;
+                                float uvy = this.atlasSize.y - 1 - Math.round(currentBlock.sideTextures.get(key) / this.atlasSize.x);
+                                data.set(index + 6, (data.get(index + 6) + uvx) / 16.0f);
+                                data.set(index + 7, (data.get(index + 7) + uvy) / 16.0f);
                             }
                         }
                     }
@@ -126,7 +129,7 @@ public class ChunkMesher {
             key.mul(this.chunkSize, chunkPos);
             Matrix4f model = new Matrix4f()
                         .rotate((float)(time * Math.PI * 0.1f), 0.0f, 1.0f, 0.0f)
-						.translate(new Vector3f(chunkPos));
+						.translate(new Vector3f(chunkPos).sub(new Vector3f(this.chunkSize).mul(0.5f)));
 
 			program.setMat("model", model);
             this.meshes.get(key).draw();

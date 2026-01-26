@@ -124,10 +124,11 @@ public class Main {
 		glEnable(GL_DEPTH_TEST);
 
 		// TODO: camera debug input
-		// TODO: start work on chunks
+		// TODO: World class with loadChunk() and a queue to inform ChunkMesher what to do
+		// TODO: chunk mesh unloading
 		// TODO: start work on networking (and server)
 
-		Chunk[][][] world = new Chunk[2][1][2];
+		Chunk[][][] world = new Chunk[1][1][1];
 
 		Vector3i chunkSize = new Vector3i(16, 16, 16);
 		Vector2i atlasSize = new Vector2i(16, 16);
@@ -135,15 +136,23 @@ public class Main {
 		ChunkMesher mesher = new ChunkMesher(chunkSize, atlasSize, atlas);
 
 		for (int cx=0; cx<world.length; cx++) {
-			for (int cy=0; cy<world[cx].length; cy++) {
-				for (int cz=0; cz<world[cx][cy].length; cz++) {
-					world[cx][cy][cz] = new Chunk(16, 16, 16);
-					Chunk chunk = world[cx][cy][cz];
+			for (int cz=0; cz<world[cx].length; cz++) {
+				for (int cy=0; cy<world[cx][cz].length; cy++) {
+					world[cx][cz][cy] = new Chunk(16, 16, 16);
+					Chunk chunk = world[cx][cz][cy];
 					for (int x=0; x<chunk.blocks.length; x++) {
-						for (int y=0; y<chunk.blocks[x].length; y++) {
-							for (int z=0; z<chunk.blocks[x][y].length; z++) {
-								chunk.setBlock(10.0f <= y ? Block.dirt : Block.air,
+						for (int z=0; z<chunk.blocks[x][0].length; z++) {
+							int height = 8 + (int)Math.round(
+								Math.sin((z + cz * 16) * 0.3f) * 2 + 
+								Math.cos((x + cx * 16) * 0.4f + 0.6f) + 
+								Math.cos((x + cx * 16) * 0.2f + 0.24f) +
+								Math.sin((x + cx * 16 + z + cz * 16) * 0.1f + 0.1f) * 2
+							);
+							for (int y=0; y<chunk.blocks[x].length; y++) {
+								chunk.setBlock(height > y ? Block.dirt : Block.air,
 									x, y, z);
+								if (height == y)
+									chunk.setBlock(Block.grass, x, y, z);
 							}
 						}
 					}
@@ -176,11 +185,11 @@ public class Main {
 		fragmentShader.delete();
 
 		Camera camera = new Camera(
-			new Vector3f(0.0f, 30.0f, -30.0f), 
+			new Vector3f(0.0f, 12.0f, -12.0f), 
 			new Vector3f(0.0f, -1.0f, 1.0f), 
-			new Vector3f(0.0f, 1.0f, 0.0f), 70.0f);
+			new Vector3f(0.0f, 1.0f, 0.0f), 90.0f);
 
-		// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 		// Run the rendering loop until the user has attempted to close
 		// the window or has pressed the ESCAPE key.
