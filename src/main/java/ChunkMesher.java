@@ -15,18 +15,20 @@ public class ChunkMesher {
     static  {
         //back
         FACES.put(new Vector3i(0, 0, -1), new Float[] {
-            0.0f, 0.0f, 0.0f, 0.75f, 0.75f, 0.75f, 1.0f, 0.0f,
+            1.0f, 1.0f, 0.0f, 0.75f, 0.75f, 0.75f, 0.0f, 1.0f,
             1.0f, 0.0f, 0.0f, 0.75f, 0.75f, 0.75f, 0.0f, 0.0f,
-            1.0f, 1.0f, 0.0f, 0.75f, 0.75f, 0.75f, 0.0f, 1.0f,
-            1.0f, 1.0f, 0.0f, 0.75f, 0.75f, 0.75f, 0.0f, 1.0f,
+            0.0f, 0.0f, 0.0f, 0.75f, 0.75f, 0.75f, 1.0f, 0.0f,
+
+            0.0f, 0.0f, 0.0f, 0.75f, 0.75f, 0.75f, 1.0f, 0.0f,
             0.0f, 1.0f, 0.0f, 0.75f, 0.75f, 0.75f, 1.0f, 1.0f,
-            0.0f, 0.0f, 0.0f, 0.75f, 0.75f, 0.75f, 1.0f, 0.0f});
+            1.0f, 1.0f, 0.0f, 0.75f, 0.75f, 0.75f, 0.0f, 1.0f});
 
         // front
         FACES.put(new Vector3i(0, 0, 1), new Float[] {
             0.0f, 0.0f, 1.0f, 0.9f, 0.9f, 0.9f, 0.0f, 0.0f,
             1.0f, 0.0f, 1.0f, 0.9f, 0.9f, 0.9f, 1.0f, 0.0f,
             1.0f, 1.0f, 1.0f, 0.9f, 0.9f, 0.9f, 1.0f, 1.0f,
+
             1.0f, 1.0f, 1.0f, 0.9f, 0.9f, 0.9f, 1.0f, 1.0f, 
             0.0f, 1.0f, 1.0f, 0.9f, 0.9f, 0.9f, 0.0f, 1.0f,
             0.0f, 0.0f, 1.0f, 0.9f, 0.9f, 0.9f, 0.0f, 0.0f});
@@ -36,36 +38,40 @@ public class ChunkMesher {
             0.0f, 1.0f, 1.0f, 0.9f, 0.9f, 0.9f, 1.0f, 1.0f,
             0.0f, 1.0f, 0.0f, 0.9f, 0.9f, 0.9f, 0.0f, 1.0f,
             0.0f, 0.0f, 0.0f, 0.9f, 0.9f, 0.9f, 0.0f, 0.0f,
+
             0.0f, 0.0f, 0.0f, 0.9f, 0.9f, 0.9f, 0.0f, 0.0f,
             0.0f, 0.0f, 1.0f, 0.9f, 0.9f, 0.9f, 1.0f, 0.0f,
             0.0f, 1.0f, 1.0f, 0.9f, 0.9f, 0.9f, 1.0f, 1.0f});
 
         // right
         FACES.put(new Vector3i(1, 0, 0), new Float[] {
-            1.0f, 1.0f, 1.0f, 0.8f, 0.8f, 0.8f, 0.0f, 1.0f,
+            1.0f, 0.0f, 0.0f, 0.8f, 0.8f, 0.8f, 1.0f, 0.0f,
             1.0f, 1.0f, 0.0f, 0.8f, 0.8f, 0.8f, 1.0f, 1.0f,
-            1.0f, 0.0f, 0.0f, 0.8f, 0.8f, 0.8f, 1.0f, 0.0f,
-            1.0f, 0.0f, 0.0f, 0.8f, 0.8f, 0.8f, 1.0f, 0.0f,
+            1.0f, 1.0f, 1.0f, 0.8f, 0.8f, 0.8f, 0.0f, 1.0f,
+
+            1.0f, 1.0f, 1.0f, 0.8f, 0.8f, 0.8f, 0.0f, 1.0f,
             1.0f, 0.0f, 1.0f, 0.8f, 0.8f, 0.8f, 0.0f, 0.0f,
-            1.0f, 1.0f, 1.0f, 0.8f, 0.8f, 0.8f, 0.0f, 1.0f});
+            1.0f, 0.0f, 0.0f, 0.8f, 0.8f, 0.8f, 1.0f, 0.0f});
 
         // bottom
         FACES.put(new Vector3i(0, -1, 0), new Float[] {
             0.0f, 0.0f, 0.0f, 0.7f, 0.7f, 0.7f, 0.0f, 1.0f,
             1.0f, 0.0f, 0.0f, 0.7f, 0.7f, 0.7f, 1.0f, 1.0f,
             1.0f, 0.0f, 1.0f, 0.7f, 0.7f, 0.7f, 1.0f, 0.0f,
+
             1.0f, 0.0f, 1.0f, 0.7f, 0.7f, 0.7f, 1.0f, 0.0f,
             0.0f, 0.0f, 1.0f, 0.7f, 0.7f, 0.7f, 0.0f, 0.0f,
             0.0f, 0.0f, 0.0f, 0.7f, 0.7f, 0.7f, 0.0f, 1.0f});
 
         // top
         FACES.put(new Vector3i(0, 1, 0), new Float[] {
-            0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+            1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
             1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-            1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-            1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+            
+            0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
             0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-            0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f});
+            1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f});
     }
 
     public ChunkMesher(Vector3i chunkSize, Vector2i atlasSize, Texture atlas) {
@@ -148,10 +154,7 @@ public class ChunkMesher {
             Vector3i chunkPos = new Vector3i();
             key.mul(this.chunkSize, chunkPos);
             Matrix4f model = new Matrix4f()
-                        .rotate((float)(time * Math.PI * 0.1f), 0.0f, 1.0f, 0.0f)
-						.translate(
-                new Vector3f(chunkPos).sub(new Vector3f(this.chunkSize.x, 1.0f, this.chunkSize.z)
-                .mul(3.0f)));
+						.translate(new Vector3f(chunkPos));
 
 			program.setMat("model", model);
             this.meshes.get(key).draw();

@@ -64,7 +64,8 @@ public class Main {
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2);
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 
-		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
+		glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE); // the window will stay hidden after creation
+		glfwWindowHint(GLFW_FOCUS_ON_SHOW, GLFW_TRUE);
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
 
 		// Create the window
@@ -101,6 +102,8 @@ public class Main {
 			);
 		} // the stack frame is popped automatically
 
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
 		// Make the OpenGL context current
 		glfwMakeContextCurrent(window);
 		// Enable v-sync
@@ -119,16 +122,17 @@ public class Main {
 		GL.createCapabilities();
 
 		// Set the clear color
-		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		glClearColor(0.5f, 0.8f, 0.9f, 0.0f);
 
 		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_CULL_FACE);
 
 		// TODO: camera debug input
 		// TODO: World class with loadChunk() and a queue to inform ChunkMesher what to do
 		// TODO: chunk mesh unloading
 		// TODO: start work on networking (and server)
 
-		Chunk[][][] world = new Chunk[6][6][1];
+		Chunk[][][] world = new Chunk[2][2][1];
 
 		Vector3i chunkSize = new Vector3i(16, 16, 16);
 		Vector2i atlasSize = new Vector2i(16, 16);
@@ -153,11 +157,10 @@ public class Main {
 								chunk.setBlock(height > y ? Block.dirt : Block.air,
 									x, y, z);
 								if (height == y) {
-									if (y>3) {
-										chunk.setBlock(Block.grass, x, y, z);
-									} else {
-										chunk.setBlock(Block.water, x, y, z);
-									}
+									chunk.setBlock(Block.grass, x, y, z);
+								}
+								if (y<5 && chunk.getBlock(x, y, z) == Block.air) {
+									chunk.setBlock(Block.water, x, y, z);
 								}
 							}
 						}
@@ -207,16 +210,24 @@ public class Main {
 		vertexShader.delete();
 		fragmentShader.delete();
 
-		Camera camera = new Camera(
-			new Vector3f(0.0f, 16.0f, -16.0f), 
-			new Vector3f(0.0f, -1.0f, 1.0f), 
-			new Vector3f(0.0f, 1.0f, 0.0f), 90.0f);
+		Camera camera = new Camera(window,
+			new Vector3f(0.0f, 0.0f, 0.0f), 
+			new Vector3f(0.0f, 0.0f, 0.0f), 
+			new Vector3f(0.0f, 1.0f, 0.0f), 
+			90.0f, 0.01f);
+
+		float deltaTime = 0.0f; // Time between current frame and last frame
+		float lastFrame = 0.0f; // Time of last frame
 
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 		// Run the rendering loop until the user has attempted to close
 		// the window or has pressed the ESCAPE key.
 		while ( !glfwWindowShouldClose(window) ) {
+			// Update
+			camera.update(window, deltaTime);
+
+			// Render
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
 			program.use();
@@ -230,6 +241,10 @@ public class Main {
 			// Poll for window events. The key callback above will only be
 			// invoked during this call.
 			glfwPollEvents();
+
+			float currentFrame = (float)glfwGetTime();
+			deltaTime = currentFrame - lastFrame;
+			lastFrame = currentFrame;
 		}
 	}
 
