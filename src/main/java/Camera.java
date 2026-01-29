@@ -89,6 +89,11 @@ public class Camera {
     public void update(Long window, float deltaTime) {
         float cameraSpeed = 10.0f * deltaTime; // adjust accordingly
 
+        if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+            glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
             this.pos.add(new Vector3f(this.front).mul(cameraSpeed));
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)

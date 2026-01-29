@@ -102,8 +102,6 @@ public class Main {
 			);
 		} // the stack frame is popped automatically
 
-		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
 		// Make the OpenGL context current
 		glfwMakeContextCurrent(window);
 		// Enable v-sync
@@ -127,21 +125,22 @@ public class Main {
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 
-		// TODO: camera debug input
+		// TODO: fix camera, create Input class so callbacks are used instead of glfwGetKey directly
 		// TODO: World class with loadChunk() and a queue to inform ChunkMesher what to do
 		// TODO: chunk mesh unloading
 		// TODO: start work on networking (and server)
 
-		Chunk[][][] world = new Chunk[2][2][1];
+		Chunk[][][] world = new Chunk[3][3][3];
 
 		Vector3i chunkSize = new Vector3i(16, 16, 16);
 		Vector2i atlasSize = new Vector2i(16, 16);
 		Texture atlas = Texture.loadTexture("atlas.png");
 		ChunkMesher mesher = new ChunkMesher(chunkSize, atlasSize, atlas);
 
-		NoiseGenerator noise = new NoiseGenerator(123456);
+		NoiseGenerator noise = new NoiseGenerator(76688437);
 
 		// World gen
+		System.out.println("World gen started");
 		for (int cx=0; cx<world.length; cx++) {
 			for (int cz=0; cz<world[cx].length; cz++) {
 				for (int cy=0; cy<world[cx][cz].length; cy++) {
@@ -151,15 +150,16 @@ public class Main {
 						for (int z=0; z<chunk.blocks[x][0].length; z++) {
 							float sampleX = x + cx * chunkSize.x;
 							float sampleY = z + cz * chunkSize.z;
-							int height = (int)Math.round(noise.noise(sampleX / 1.5f, sampleY / 1.5f) * 10 + 4);
+							int height = (int)Math.round(noise.noise(sampleX / 1.5f, sampleY / 1.5f) * 15 + 15);
 							height = Math.max(3, height);
 							for (int y=0; y<chunk.blocks[x].length; y++) {
-								chunk.setBlock(height > y ? Block.dirt : Block.air,
+								int yCoord = y + cy * chunkSize.y;
+								chunk.setBlock(height > yCoord ? Block.dirt : Block.air,
 									x, y, z);
-								if (height == y) {
+								if (height == yCoord) {
 									chunk.setBlock(Block.grass, x, y, z);
 								}
-								if (y<5 && chunk.getBlock(x, y, z) == Block.air) {
+								if (yCoord<15 && chunk.getBlock(x, y, z) == Block.air) {
 									chunk.setBlock(Block.water, x, y, z);
 								}
 							}
@@ -168,8 +168,10 @@ public class Main {
 				}
 			}
 		}
+		System.out.println("World gen finished");
 
 		// Mesh gen
+		System.out.println("Mesh gen started");
 		for (int cx=0; cx<world.length; cx++) {
 			for (int cz=0; cz<world[cx].length; cz++) {
 				for (int cy=0; cy<world[cx][cz].length; cy++) {
@@ -178,14 +180,19 @@ public class Main {
 					Chunk south = null;
 					Chunk east = null;
 					Chunk west = null;
+					Chunk up = null;
+					Chunk down = null;
 					if (cz + 1 < world[0].length) {north = world[cx][cz+1][cy];}
 					if (cz - 1 >= 0) south = world[cx][cz-1][cy];
 					if (cx + 1 < world.length) east = world[cx+1][cz][cy];
 					if (cx - 1 >= 0) west = world[cx-1][cz][cy];
-					mesher.genChunk(new Vector3i(cx, cy, cz), center, north, south, east, west);
+					if (cy + 1 < world[0][0].length) up = world[cx][cz][cy+1];
+					if (cy - 1 >= 0) down = world[cx][cz][cy-1];
+					mesher.genChunk(new Vector3i(cx, cy, cz), center, north, south, east, west, up, down);
 				}
 			}
 		}
+		System.out.println("Mesh gen finished");
 
 		Shader vertexShader = new Shader(GL_VERTEX_SHADER);
 		Shader fragmentShader = new Shader(GL_FRAGMENT_SHADER);

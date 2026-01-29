@@ -82,7 +82,8 @@ public class ChunkMesher {
         this.atlas = atlas;
     }
 
-    public void genChunk(Vector3i pos, Chunk chunk, Chunk north, Chunk south, Chunk east, Chunk west) {
+    public void genChunk(Vector3i pos, Chunk chunk, Chunk north, 
+                         Chunk south, Chunk east, Chunk west, Chunk top, Chunk bottom) {
         ArrayList<Float> data = new ArrayList<>();
 
         for (int x=0; x<chunk.blocks.length; x++) {
@@ -100,6 +101,14 @@ public class ChunkMesher {
                             } else if (checkPos.x>=this.chunkSize.x && east!=null) {
                                 checkPos.x = 0;
                                 checkBlock = east.getBlock(checkPos);
+                            }
+
+                            if (checkPos.y<0 && bottom!=null) {
+                                checkPos.y = this.chunkSize.y - 1;
+                                checkBlock = bottom.getBlock(checkPos);
+                            } else if (checkPos.y>=this.chunkSize.y && top!=null) {
+                                checkPos.y = 0;
+                                checkBlock = top.getBlock(checkPos);
                             }
 
                             if (checkPos.z<0 && south!=null) {
@@ -149,7 +158,6 @@ public class ChunkMesher {
     }
 
     public void draw(ShaderProgram program) {
-        float time = (float)glfwGetTime();
         for (Vector3i key : this.meshes.keySet()) {
             Vector3i chunkPos = new Vector3i();
             key.mul(this.chunkSize, chunkPos);
