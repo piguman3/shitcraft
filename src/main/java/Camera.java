@@ -87,7 +87,7 @@ public class Camera {
     }
 
     public void update(Long window, float deltaTime) {
-        float cameraSpeed = 10.0f * deltaTime; // adjust accordingly
+        float cameraSpeed = 10.0f * deltaTime; // adjust accordingl
 
         if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -99,8 +99,8 @@ public class Camera {
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
             this.pos.sub(new Vector3f(this.front).mul(cameraSpeed));
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-            this.pos.sub(new Vector3f(this.front).cross(this.up).mul(cameraSpeed));
+            this.pos.sub(new Vector3f(this.front).cross(this.up).normalize().mul(cameraSpeed));
         if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-            this.pos.add(new Vector3f(this.front).cross(this.up).mul(cameraSpeed));
+            this.pos.add(new Vector3f(this.front).cross(this.up).normalize().mul(cameraSpeed));
     }
 }
