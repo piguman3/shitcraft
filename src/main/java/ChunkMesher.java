@@ -10,6 +10,8 @@ public class ChunkMesher {
     public Texture atlas;
     public Vector2i atlasSize;
 
+    private final float PADDING = 0.0f;
+
     public static HashMap<Vector3i, Float[]> FACES = new HashMap<>();
 
     static  {
@@ -93,6 +95,8 @@ public class ChunkMesher {
                         Vector3i checkPos = new Vector3i(x + key.x, y + key.y, z + key.z);
                         Block checkBlock = chunk.getBlock(checkPos);
 
+                        Block currentBlock = chunk.getBlock(x, y, z);
+
                         // If block is outside of chunk, check chunks around it
                         if (checkBlock==null) {
                             if (checkPos.x<0 && west!=null) {
@@ -120,8 +124,6 @@ public class ChunkMesher {
                             }
                         }
 
-                        Block currentBlock = chunk.getBlock(x, y, z);
-
                         if ((checkBlock==Block.air || checkBlock==null) && 
                             currentBlock!=Block.air) {
                             Float[] face = FACES.get(key);
@@ -135,10 +137,11 @@ public class ChunkMesher {
                                 data.set(index + 2, data.get(index + 2) + z);
 
                                 // UVs
-                                float uvx = currentBlock.sideTextures.get(key) % this.atlasSize.x;
-                                float uvy = this.atlasSize.y - 1 - Math.round(currentBlock.sideTextures.get(key) / this.atlasSize.x);
-                                data.set(index + 6, (data.get(index + 6) + uvx) / 16.0f);
-                                data.set(index + 7, (data.get(index + 7) + uvy) / 16.0f);
+                        
+                                float uvx = currentBlock.sideTextures.get(key) % this.atlasSize.x + PADDING;
+                                float uvy = this.atlasSize.y - 1 - Math.round(currentBlock.sideTextures.get(key) / this.atlasSize.x) + PADDING;
+                                data.set(index + 6, (data.get(index + 6) * (1 - PADDING) + uvx) / 16.0f);
+                                data.set(index + 7, (data.get(index + 7) * (1 - PADDING) + uvy) / 16.0f);
                             }
                         }
                     }

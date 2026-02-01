@@ -2,19 +2,7 @@ import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
-import org.lwjgl.stb.STBIIOCallbacks;
-import org.lwjgl.stb.STBImage;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.nio.*;
-import java.nio.charset.StandardCharsets;
-import java.util.Scanner;
-
 import org.joml.*;
 import java.lang.Math;
 
@@ -22,10 +10,7 @@ import static org.lwjgl.glfw.GLFW.*;
  
 //import all of the necessary OpenGL functions statically so they can be easily accessed
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.*;
-import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.system.MemoryUtil.*;
@@ -130,9 +115,9 @@ public class Main {
 		// TODO: chunk mesh unloading
 		// TODO: start work on networking (and server)
 
-		Chunk[][][] world = new Chunk[3][3][3];
+		Chunk[][][] world = new Chunk[8][8][8];
 
-		Vector3i chunkSize = new Vector3i(16, 16, 16);
+		Vector3i chunkSize = new Vector3i(32, 32, 32);
 		Vector2i atlasSize = new Vector2i(16, 16);
 		Texture atlas = Texture.loadTexture("atlas.png");
 		ChunkMesher mesher = new ChunkMesher(chunkSize, atlasSize, atlas);
@@ -140,7 +125,7 @@ public class Main {
 		NoiseGenerator noise = new NoiseGenerator(76688437);
 
 		// World gen
-		System.out.println("World gen started");
+		System.out.println("World gen started " + glfwGetTime());
 		for (int cx=0; cx<world.length; cx++) {
 			for (int cz=0; cz<world[cx].length; cz++) {
 				for (int cy=0; cy<world[cx][cz].length; cy++) {
@@ -150,7 +135,7 @@ public class Main {
 						for (int z=0; z<chunk.blocks[x][0].length; z++) {
 							float sampleX = x + cx * chunkSize.x;
 							float sampleY = z + cz * chunkSize.z;
-							int height = (int)Math.round(noise.noise(sampleX / 1.5f, sampleY / 1.5f) * 15 + 15);
+							int height = (int)Math.round(noise.noise(sampleX / 1.5f, sampleY / 1.5f) * 20 + 40);
 							height = Math.max(3, height);
 							for (int y=0; y<chunk.blocks[x].length; y++) {
 								int yCoord = y + cy * chunkSize.y;
@@ -159,7 +144,10 @@ public class Main {
 								if (height == yCoord) {
 									chunk.setBlock(Block.grass, x, y, z);
 								}
-								if (yCoord<15 && chunk.getBlock(x, y, z) == Block.air) {
+								if (height - 5 >= yCoord) {
+									chunk.setBlock(Block.stone, x, y, z);
+								}
+								if (yCoord<40 && chunk.getBlock(x, y, z) == Block.air) {
 									chunk.setBlock(Block.water, x, y, z);
 								}
 							}
@@ -168,10 +156,10 @@ public class Main {
 				}
 			}
 		}
-		System.out.println("World gen finished");
+		System.out.println("World gen finished " + glfwGetTime());
 
 		// Mesh gen
-		System.out.println("Mesh gen started");
+		System.out.println("Mesh gen started " + glfwGetTime());
 		for (int cx=0; cx<world.length; cx++) {
 			for (int cz=0; cz<world[cx].length; cz++) {
 				for (int cy=0; cy<world[cx][cz].length; cy++) {
@@ -192,8 +180,9 @@ public class Main {
 				}
 			}
 		}
-		System.out.println("Mesh gen finished");
+		System.out.println("Mesh gen finished " + glfwGetTime());
 
+		System.out.println("Shader started " + glfwGetTime());
 		Shader vertexShader = new Shader(GL_VERTEX_SHADER);
 		Shader fragmentShader = new Shader(GL_FRAGMENT_SHADER);
 
@@ -216,6 +205,8 @@ public class Main {
 
 		vertexShader.delete();
 		fragmentShader.delete();
+
+		System.out.println("Shader finished " + glfwGetTime());
 
 		Camera camera = new Camera(window,
 			new Vector3f(0.0f, 0.0f, 0.0f), 

@@ -76,7 +76,7 @@ public class Camera {
 
             float ratio = (float)pWidth.get() / (float)pHeight.get();
 
-            Matrix4f perspective = new Matrix4f().perspective((float) Math.toRadians(FOV), ratio, 0.01f, 100.0f);
+            Matrix4f perspective = new Matrix4f().perspective((float) Math.toRadians(FOV), ratio, 0.01f, 1000.0f);
             program.setMat("projection", perspective);
         }
 
