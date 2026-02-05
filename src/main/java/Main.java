@@ -115,44 +115,20 @@ public class Main {
 		// TODO: chunk mesh unloading
 		// TODO: start work on networking (and server)
 
-		Chunk[][][] world = new Chunk[8][8][8];
-
 		Vector3i chunkSize = new Vector3i(32, 32, 32);
+		
+		World world = new World(chunkSize);
+
 		Vector2i atlasSize = new Vector2i(16, 16);
 		Texture atlas = Texture.loadTexture("atlas.png");
 		ChunkMesher mesher = new ChunkMesher(chunkSize, atlasSize, atlas);
 
-		NoiseGenerator noise = new NoiseGenerator(76688437);
-
 		// World gen
 		System.out.println("World gen started " + glfwGetTime());
-		for (int cx=0; cx<world.length; cx++) {
-			for (int cz=0; cz<world[cx].length; cz++) {
-				for (int cy=0; cy<world[cx][cz].length; cy++) {
-					world[cx][cz][cy] = new Chunk(chunkSize.x, chunkSize.y, chunkSize.z);
-					Chunk chunk = world[cx][cz][cy];
-					for (int x=0; x<chunk.blocks.length; x++) {
-						for (int z=0; z<chunk.blocks[x][0].length; z++) {
-							float sampleX = x + cx * chunkSize.x;
-							float sampleY = z + cz * chunkSize.z;
-							int height = (int)Math.round(noise.noise(sampleX / 1.5f, sampleY / 1.5f) * 20 + 40);
-							height = Math.max(3, height);
-							for (int y=0; y<chunk.blocks[x].length; y++) {
-								int yCoord = y + cy * chunkSize.y;
-								chunk.setBlock(height > yCoord ? Block.dirt : Block.air,
-									x, y, z);
-								if (height == yCoord) {
-									chunk.setBlock(Block.grass, x, y, z);
-								}
-								if (height - 5 >= yCoord) {
-									chunk.setBlock(Block.stone, x, y, z);
-								}
-								if (yCoord<40 && chunk.getBlock(x, y, z) == Block.air) {
-									chunk.setBlock(Block.water, x, y, z);
-								}
-							}
-						}
-					}
+		for (int cx=0; cx<10; cx++) {
+			for (int cz=0; cz<10; cz++) {
+				for (int cy=0; cy<5; cy++) {
+					world.loadChunk(new Vector3i(cx, cy, cz));
 				}
 			}
 		}
@@ -160,22 +136,16 @@ public class Main {
 
 		// Mesh gen
 		System.out.println("Mesh gen started " + glfwGetTime());
-		for (int cx=0; cx<world.length; cx++) {
-			for (int cz=0; cz<world[cx].length; cz++) {
-				for (int cy=0; cy<world[cx][cz].length; cy++) {
-					Chunk center = world[cx][cz][cy];
-					Chunk north = null;
-					Chunk south = null;
-					Chunk east = null;
-					Chunk west = null;
-					Chunk up = null;
-					Chunk down = null;
-					if (cz + 1 < world[0].length) {north = world[cx][cz+1][cy];}
-					if (cz - 1 >= 0) south = world[cx][cz-1][cy];
-					if (cx + 1 < world.length) east = world[cx+1][cz][cy];
-					if (cx - 1 >= 0) west = world[cx-1][cz][cy];
-					if (cy + 1 < world[0][0].length) up = world[cx][cz][cy+1];
-					if (cy - 1 >= 0) down = world[cx][cz][cy-1];
+		for (int cx=0; cx<10; cx++) {
+			for (int cz=0; cz<10; cz++) {
+				for (int cy=0; cy<5; cy++) {
+					Chunk center = world.getChunk(new Vector3i(cx, cy, cz));
+					Chunk north = world.getChunk(new Vector3i(cx, cy, cz+1));
+					Chunk south = world.getChunk(new Vector3i(cx, cy, cz-1));
+					Chunk east = world.getChunk(new Vector3i(cx+1, cy, cz));
+					Chunk west = world.getChunk(new Vector3i(cx-1, cy, cz));
+					Chunk up = world.getChunk(new Vector3i(cx, cy+1, cz));
+					Chunk down = world.getChunk(new Vector3i(cx, cy-1, cz));
 					mesher.genChunk(new Vector3i(cx, cy, cz), center, north, south, east, west, up, down);
 				}
 			}
